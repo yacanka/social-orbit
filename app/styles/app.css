@@ -1,0 +1,45 @@
+.orbit-app, .scene { height: 100dvh; inset: 0; position: fixed; width: 100vw; }
+.orbit-app { background: #050611; overflow: hidden; }
+.scene { z-index: 0; }
+.scene::after { background: radial-gradient(circle at 52% 45%, transparent 15%, rgba(5,6,17,.1) 45%, rgba(5,6,17,.82) 100%); content: ""; inset: 0; pointer-events: none; position: absolute; }
+.topbar { align-items: center; display: flex; justify-content: space-between; left: 0; padding: 22px 30px; pointer-events: none; position: fixed; right: 0; top: 0; z-index: 5; }
+.topbar > * { pointer-events: auto; }
+.brand { align-items: center; color: var(--ink); display: flex; gap: 10px; letter-spacing: .18em; text-decoration: none; }
+.brand b { font-size: 12px; }
+.topbar nav { display: flex; gap: 8px; }
+.local-status { align-items: center; color: #8c8fa1; display: flex; font-size: 11px; gap: 8px; margin: 0; }
+.local-status span { background: #65d8b0; border-radius: 50%; box-shadow: 0 0 8px #65d8b0; height: 5px; width: 5px; }
+.hero-copy { left: 5vw; max-width: 340px; position: fixed; top: 50%; transform: translateY(-55%); z-index: 3; }
+.hero-copy h1 { font-size: clamp(36px, 4vw, 61px); font-weight: 350; letter-spacing: -.055em; line-height: .98; margin: 0 0 18px; }
+.hero-copy h1 em, .onboarding h1 em { color: var(--amber); font-family: Georgia, serif; font-weight: 400; }
+.hero-copy > p:not(.eyebrow) { color: var(--muted); font-size: 13px; line-height: 1.65; margin: 0 0 25px; max-width: 290px; }
+.add-button { min-height: 50px; }
+.add-button span { font-size: 20px; margin-right: 8px; }
+.legend { bottom: 35px; display: grid; gap: 10px; position: fixed; right: 34px; width: 220px; z-index: 3; }
+.legend p { align-items: center; display: grid; grid-template-columns: 13px 1fr auto; margin: 0; }
+.legend span { color: #777a90; font-size: 9px; line-height: 1.35; }
+.legend span b { color: #d8d8df; display: block; font-size: 11px; }
+.legend strong { color: #888b9c; font-size: 10px; }
+.dot { border-radius: 50%; box-shadow: 0 0 8px currentColor; height: 5px; width: 5px; }
+.dot--one { background: var(--amber); color: var(--amber); }.dot--two { background: var(--violet); color: var(--violet); }
+.dot--three { background: var(--cyan); color: var(--cyan); }.dot--free { background: #8a9bb7; color: #8a9bb7; }
+.camera-hint { bottom: 25px; color: #585b70; font-size: 9px; left: 50%; letter-spacing: .04em; margin: 0; position: fixed; transform: translateX(-50%); z-index: 2; }
+.camera-hint span { font-size: 15px; margin-right: 7px; }
+.empty-orbit { background: transparent; border: 0; cursor: pointer; left: 50%; position: fixed; text-align: center; top: 72%; transform: translate(-50%,-50%); z-index: 2; }
+.empty-orbit > span { align-items: center; border: 1px dashed rgba(246,189,105,.4); border-radius: 50%; color: var(--amber); display: flex; font-size: 23px; height: 54px; justify-content: center; margin: auto auto 10px; width: 54px; }
+.empty-orbit b, .empty-orbit small { display: block; }.empty-orbit b { font-size: 12px; }.empty-orbit small { color: #676a80; font-size: 9px; margin-top: 3px; }
+.person-label { align-items: center; backdrop-filter: blur(8px); background: rgba(8,9,22,.72); border: 1px solid rgba(255,255,255,.13); border-radius: 999px; cursor: pointer; display: flex; font-size: 10px; gap: 7px; padding: 5px 6px 5px 10px; white-space: nowrap; }
+.person-label span { background: rgba(255,255,255,.09); border-radius: 999px; color: var(--amber); font-size: 8px; padding: 3px 5px; }
+.person-label--free { opacity: .72; }
+.owner-label { color: #fff3dd; font-size: 13px; font-weight: 700; text-align: center; text-shadow: 0 2px 14px #000; white-space: nowrap; }
+.owner-label span { color: var(--amber); display: block; font-size: 6px; letter-spacing: .26em; margin-bottom: 2px; }
+.scene-loading, .app-loading { align-items: center; display: flex; inset: 0; justify-content: center; position: fixed; }
+.app-loading { flex-direction: column; gap: 18px; }.app-loading p, .scene-loading { color: #7e8092; font-size: 12px; letter-spacing: .12em; }
+.webgl-fallback { margin: 100px auto; max-width: 540px; padding: 20px; position: relative; z-index: 1; }
+
+@media (max-width: 760px) {
+  .topbar { padding: 14px 16px; }.brand b, .local-status { display: none; }
+  .hero-copy { left: 20px; max-width: 280px; top: 24%; transform: none; }.hero-copy h1 { font-size: 38px; }
+  .hero-copy > p:not(.eyebrow) { display: none; }.legend { bottom: 20px; left: 18px; right: auto; width: 190px; }
+  .camera-hint { display: none; }.empty-orbit { top: 67%; }.scene::after { background: linear-gradient(180deg, rgba(5,6,17,.64), transparent 42%, rgba(5,6,17,.7)); }
+}

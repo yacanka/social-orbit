@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #f5f3ee;
+  --muted: #999aad;
+  --panel: rgba(10, 11, 28, 0.78);
+  --line: rgba(255, 255, 255, 0.12);
+  --amber: #f6bd69;
+  --violet: #9d83f7;
+  --cyan: #68d8f7;
+  color-scheme: dark;
+  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #050611; color: var(--ink); }
+body { overflow: hidden; }
+button, input { font: inherit; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+.button {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 46px;
+  padding: 0 22px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  transition: transform .2s ease, opacity .2s ease, background .2s ease;
+}
+.button:hover:not(:disabled) { transform: translateY(-2px); }
+.button:disabled { cursor: not-allowed; opacity: .4; }
+.button--primary { background: linear-gradient(120deg, #fac77a, #e99057); color: #1a1011; box-shadow: 0 12px 35px rgba(234, 144, 87, .18); }
+.button--ghost { background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+.button--danger { background: rgba(239, 101, 115, .1); border: 1px solid rgba(239, 101, 115, .3); color: #ff9da8; }
+.icon-button, .round-button {
+  align-items: center; background: rgba(255,255,255,.045); border: 1px solid var(--line); cursor: pointer; display: inline-flex; justify-content: center;
+}
+.icon-button { border-radius: 50%; font-size: 24px; height: 38px; width: 38px; }
+.round-button { border-radius: 50%; font-size: 15px; height: 42px; width: 42px; }
+.round-button:hover, .icon-button:hover { background: rgba(255,255,255,.1); }
+.eyebrow { color: var(--amber); font-size: 10px; font-weight: 800; letter-spacing: .28em; margin: 0 0 10px; }
+input {
+  background: rgba(255,255,255,.05); border: 1px solid var(--line); border-radius: 14px; color: var(--ink); min-height: 50px; padding: 0 16px;
+}
+input::placeholder { color: #65677b; }
+
+.brand-mark { display: inline-block; height: 34px; position: relative; width: 34px; }
+.brand-mark::before, .brand-mark::after { border: 1px solid rgba(246,189,105,.72); border-radius: 50%; content: ""; inset: 11px 1px; position: absolute; transform: rotate(42deg); }
+.brand-mark::after { transform: rotate(-42deg); }
+.brand-mark span, .brand-mark i { background: var(--amber); border-radius: 50%; box-shadow: 0 0 18px var(--amber); height: 7px; left: 14px; position: absolute; top: 14px; width: 7px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
