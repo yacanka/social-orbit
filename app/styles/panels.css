@@ -13,6 +13,28 @@
 .answer-row span { color: #8d8fa1; font-size: 10px; line-height: 1.4; }.answer-row strong { color: var(--amber); font-size: 10px; }
 .panel-actions { display: grid; gap: 9px; margin-top: 25px; }.panel-actions .button { width: 100%; }
 .settings-form { display: grid; gap: 10px; }.settings-form label { color: #aaaabd; font-size: 11px; }.settings-form .button { margin-top: 6px; }
+.skin-picker { border: 0; border-top: 1px solid var(--line); margin: 25px 0 0; padding: 22px 0 0; }
+.skin-picker legend { float: left; font-size: 12px; font-weight: 700; letter-spacing: .05em; width: 100%; }
+.skin-picker > p { clear: both; color: #858798; font-size: 10px; line-height: 1.5; margin: 9px 0 14px; padding-top: 6px; }
+.skin-grid { display: grid; gap: 8px; grid-template-columns: repeat(3, 1fr); }
+.skin-grid label { align-items: center; background: rgba(255,255,255,.025); border: 1px solid var(--line); border-radius: 13px; cursor: pointer; display: flex; flex-direction: column; min-height: 108px; padding: 10px 5px 8px; position: relative; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.skin-grid label:hover { background: rgba(255,255,255,.06); transform: translateY(-1px); }
+.skin-grid label.is-selected { background: rgba(246,189,105,.08); border-color: rgba(246,189,105,.68); box-shadow: inset 0 0 20px rgba(246,189,105,.04); }
+.skin-grid input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.skin-grid input:focus-visible + .planet-swatch { outline: 2px solid var(--amber); outline-offset: 4px; }
+.skin-grid b { font-size: 10px; margin-top: 8px; }.skin-grid small { color: #77798c; font-size: 7px; margin-top: 2px; }
+.planet-swatch { background: var(--planet); border-radius: 50%; box-shadow: inset -8px -5px 10px rgba(0,0,0,.35), 0 0 12px var(--glow); display: block; height: 36px; position: relative; width: 36px; }
+.planet-swatch::after { background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,.16) 6px, transparent 8px); border-radius: inherit; content: ""; inset: 0; opacity: .55; position: absolute; }
+.planet-swatch--sun { --planet: radial-gradient(circle at 35% 30%,#fff8af,#ff9c21 45%,#c93008); --glow: #ff7a1f; }
+.planet-swatch--mercury { --planet: radial-gradient(circle at 35% 35%,#ded1c2,#776f69 62%,#393432); --glow: #8e8178; }
+.planet-swatch--venus { --planet: linear-gradient(15deg,#75451e,#efb761 47%,#a96226 55%,#f4cf83); --glow: #d89245; }
+.planet-swatch--earth { --planet: radial-gradient(ellipse at 33% 42%,#53a65d 0 18%,transparent 20%),radial-gradient(ellipse at 72% 65%,#72a85f 0 13%,transparent 15%),#2276b9; --glow: #3e9ee9; }
+.planet-swatch--mars { --planet: radial-gradient(circle at 30% 28%,#eea27a,#ad4a2c 58%,#57241b); --glow: #c45535; }
+.planet-swatch--jupiter { --planet: repeating-linear-gradient(0deg,#8e5945 0 4px,#efd0a7 5px 9px,#ba7954 10px 13px); --glow: #c38d67; }
+.planet-swatch--saturn { --planet: repeating-linear-gradient(0deg,#96784d 0 4px,#ecd39b 5px 9px); --glow: #d1ae70; }
+.planet-swatch--saturn i { border: 2px solid #cdb47c; border-radius: 50%; height: 15px; left: -7px; position: absolute; top: 11px; transform: rotate(-16deg); width: 50px; }
+.planet-swatch--uranus { --planet: linear-gradient(#d9fbf5,#68c1c6); --glow: #75d6d6; }
+.planet-swatch--neptune { --planet: repeating-linear-gradient(0deg,#17328e 0 7px,#4778e9 8px 12px); --glow: #3b66df; }
 .privacy-card, .danger-zone { border: 1px solid var(--line); border-radius: 16px; margin-top: 24px; padding: 18px; }
 .privacy-card p, .danger-zone p { color: #858798; font-size: 11px; line-height: 1.6; margin: 0 0 15px; }
 .danger-zone { border-color: rgba(239,101,115,.22); }.danger-zone .button { width: 100%; }

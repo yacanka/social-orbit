@@ -58,7 +58,7 @@ export function OrbitApp() {
   return (
     <main className="orbit-app">
       <div className="scene"><OrbitScene ownerName={orbit.state.ownerName} placements={placements}
-        paused={manuallyPaused || reducedMotion} onSelect={setSelectedId} /></div>
+        nucleusSkin={orbit.state.nucleusSkin} paused={manuallyPaused || reducedMotion} onSelect={setSelectedId} /></div>
       <header className="topbar">
         <a className="brand" href="#main-controls" aria-label="Social Orbit ana görünüm"><span className="brand-mark"><i /></span><b>SOCIAL ORBIT</b></a>
         <p className="local-status"><span /> Yalnızca bu cihazda</p>
@@ -85,7 +85,8 @@ export function OrbitApp() {
       {listOpen && <aside className="list-drawer"><header><div><p className="eyebrow">TÜM BAĞLAR</p><h2>Kişiler</h2></div><button className="icon-button" onClick={() => setListOpen(false)}>×</button></header>
         <AccessiblePeopleList placements={placements} onSelect={(id) => { setSelectedId(id); setListOpen(false); }} /></aside>}
       {selected && <PersonPanel placement={selected} onClose={() => setSelectedId(undefined)} onEdit={() => setWizard("edit")} onDelete={removeSelected} />}
-      {settingsOpen && <SettingsPanel ownerName={orbit.state.ownerName} onClose={() => setSettingsOpen(false)} onRename={orbit.setOwnerName} onErase={orbit.eraseAll} />}
+      {settingsOpen && <SettingsPanel ownerName={orbit.state.ownerName} nucleusSkin={orbit.state.nucleusSkin}
+        onClose={() => setSettingsOpen(false)} onRename={orbit.setOwnerName} onSkinChange={orbit.setNucleusSkin} onErase={orbit.eraseAll} />}
       {wizard && <PersonWizard person={wizard === "edit" ? selected?.person : undefined} onCancel={() => setWizard(null)} onSave={savePerson} />}
     </main>
   );

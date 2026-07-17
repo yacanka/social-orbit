@@ -1,16 +1,20 @@
 "use client";
 
 import { OrbitControls } from "@react-three/drei/core/OrbitControls.js";
-import { Sparkles } from "@react-three/drei/core/Sparkles.js";
 import { Stars } from "@react-three/drei/core/Stars.js";
-import { Html } from "@react-three/drei/web/Html.js";
+import { useFrame } from "@react-three/fiber";
+import { useRef } from "react";
 import { BackSide } from "three";
-import type { Placement } from "../domain/types";
+import type { Group } from "three";
+import type { Placement, PlanetSkin } from "../domain/types";
+import { Nucleus } from "./Nucleus";
 import { PersonNode } from "./PersonNode";
+import { SpaceEffects } from "./SpaceEffects";
 import { UNIVERSE_RADIUS } from "./motion";
 
 interface AtomSceneProps {
   ownerName: string;
+  nucleusSkin: PlanetSkin;
   placements: Placement[];
   paused: boolean;
   onSelect: (id: string) => void;
@@ -22,23 +26,26 @@ const SHELLS = [
   { shell: 3, radius: 12.1, color: "#72d9ff", rotation: [0.38, -0.22, 0.26] },
 ] as const;
 
-function Nucleus({ ownerName }: Pick<AtomSceneProps, "ownerName">) {
-  return <group>
-    <mesh><sphereGeometry args={[1.05, 48, 48]} />
-      <meshStandardMaterial color="#f6d19a" emissive="#ff8a45" emissiveIntensity={2.4} roughness={0.22} /></mesh>
-    <mesh scale={1.32}><sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial color="#ff7b4d" transparent opacity={0.08} /></mesh>
-    <pointLight color="#ff9b62" intensity={35} distance={13} decay={2} />
-    <Sparkles count={24} scale={3.2} size={2} speed={0.18} color="#ffd6a0" />
-    <Html center position={[0, -1.65, 0]}><div className="owner-label"><span>MERKEZ</span>{ownerName}</div></Html>
+function EnergyShell({ radius, color, rotation, paused, index }: typeof SHELLS[number] & { paused: boolean; index: number }) {
+  const pulse = useRef<Group>(null);
+  useFrame(({ clock }) => {
+    if (!pulse.current) return;
+    const time = paused ? 0 : clock.getElapsedTime();
+    const angle = time * (.18 - index * .025) + index * 2.1;
+    pulse.current.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+  });
+  return <group rotation={rotation}>
+    <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[radius, .018, 8, 220]} />
+      <meshBasicMaterial color={color} transparent opacity={.4} /></mesh>
+    <mesh rotation={[Math.PI / 2, 0, 0]} scale={1.003}><torusGeometry args={[radius, .055, 6, 220, .5]} />
+      <meshBasicMaterial color={color} transparent opacity={.18} /></mesh>
+    <group ref={pulse}><mesh><sphereGeometry args={[.075, 12, 12]} />
+      <meshBasicMaterial color={color} /></mesh><pointLight color={color} intensity={1.8} distance={2.5} /></group>
   </group>;
 }
 
-function OrbitShells() {
-  return <>{SHELLS.map(({ shell, radius, color, rotation }) => <group rotation={rotation} key={shell}>
-    <mesh><torusGeometry args={[radius, 0.018, 8, 180]} />
-      <meshBasicMaterial color={color} transparent opacity={0.34} /></mesh>
-  </group>)}</>;
+function OrbitShells({ paused }: { paused: boolean }) {
+  return <>{SHELLS.map((shell, index) => <EnergyShell {...shell} index={index} paused={paused} key={shell.shell} />)}</>;
 }
 
 function UniverseBoundary() {
@@ -47,13 +54,15 @@ function UniverseBoundary() {
 }
 
 /** Social Orbit'in etkileşimli Three.js sahnesini oluşturur. */
-export function AtomScene({ ownerName, placements, paused, onSelect }: AtomSceneProps) {
+export function AtomScene({ ownerName, nucleusSkin, placements, paused, onSelect }: AtomSceneProps) {
   return <>
     <color attach="background" args={["#050611"]} />
     <fog attach="fog" args={["#050611", 28, 60]} />
-    <ambientLight intensity={0.18} color="#8493d8" />
-    <Stars radius={70} depth={40} count={1800} factor={2.2} saturation={0.35} fade speed={paused ? 0 : 0.12} />
-    <UniverseBoundary /><OrbitShells /><Nucleus ownerName={ownerName} />
+    <ambientLight intensity={.34} color="#91a4ef" />
+    <directionalLight position={[8, 10, 7]} intensity={1.35} color="#c9d6ff" />
+    <Stars radius={70} depth={40} count={2400} factor={2.2} saturation={.45} fade speed={paused ? 0 : .12} />
+    <SpaceEffects paused={paused} /><UniverseBoundary /><OrbitShells paused={paused} />
+    <Nucleus ownerName={ownerName} skin={nucleusSkin} paused={paused} />
     {placements.map((placement) => <PersonNode key={placement.person.id} placement={placement} paused={paused} onSelect={onSelect} />)}
     <OrbitControls enablePan={false} minDistance={9} maxDistance={42} autoRotate={!paused && !placements.length} autoRotateSpeed={0.25} />
   </>;

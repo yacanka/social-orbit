@@ -18,6 +18,7 @@ const personSchema = z.object({
 const stateSchema = z.object({
   schemaVersion: z.literal(1),
   ownerName: z.string().max(60),
+  nucleusSkin: z.enum(["sun", "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune"]).default("sun"),
   people: z.array(personSchema),
 });
 

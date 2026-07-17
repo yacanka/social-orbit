@@ -14,9 +14,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Social Orbit",
     description: "Yakınlık bir çekim meselesi.",
-    images: ["/og.png"],
+    images: ["/social-orbit-og.png"],
   },
-  twitter: { card: "summary_large_image", images: ["/og.png"] },
+  twitter: { card: "summary_large_image", images: ["/social-orbit-og.png"] },
 };
 
 export default function RootLayout({

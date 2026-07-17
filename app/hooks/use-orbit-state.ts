@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { calculateScore, normalizeName } from "../domain/scoring";
-import { EMPTY_STATE, type AppState, type Person, type SurveyAnswer } from "../domain/types";
+import { EMPTY_STATE, type AppState, type Person, type PlanetSkin, type SurveyAnswer } from "../domain/types";
 import { clearState, loadState, saveState } from "../storage/orbit-storage";
 
 function createPerson(name: string, answers: SurveyAnswer[]): Person {
@@ -39,6 +39,10 @@ export function useOrbitState() {
     setState((current) => ({ ...current, ownerName: normalizeName(ownerName) }));
   }, []);
 
+  const setNucleusSkin = useCallback((nucleusSkin: PlanetSkin) => {
+    setState((current) => ({ ...current, nucleusSkin }));
+  }, []);
+
   const addPerson = useCallback((name: string, answers: SurveyAnswer[]) => {
     setState((current) => ({ ...current, people: [...current.people, createPerson(name, answers)] }));
   }, []);
@@ -63,5 +67,5 @@ export function useOrbitState() {
     setState(EMPTY_STATE);
   }, []);
 
-  return { state, ready, setOwnerName, addPerson, updatePerson, deletePerson, eraseAll };
+  return { state, ready, setOwnerName, setNucleusSkin, addPerson, updatePerson, deletePerson, eraseAll };
 }
