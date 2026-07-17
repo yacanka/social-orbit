@@ -1,23 +1,30 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { PLANETS } from "../domain/planets";
 import { normalizeName } from "../domain/scoring";
-import type { PlanetSkin } from "../domain/types";
+import type { CustomTexture, PlanetSkin } from "../domain/types";
+import { prepareCustomTexture } from "./custom-texture";
 
 interface SettingsPanelProps {
   ownerName: string;
   nucleusSkin: PlanetSkin;
+  customTexture: CustomTexture | null;
   onClose: () => void;
   onRename: (name: string) => void;
   onSkinChange: (skin: PlanetSkin) => void;
+  onCustomTextureChange: (texture: CustomTexture) => void;
+  onCustomTextureRemove: () => void;
   onErase: () => Promise<void>;
 }
 
 /** Merkez adını ve cihazdaki veri yaşam döngüsünü yönetir. */
-export function SettingsPanel({ ownerName, nucleusSkin, onClose, onRename, onSkinChange, onErase }: SettingsPanelProps) {
+export function SettingsPanel({ ownerName, nucleusSkin, customTexture, onClose, onRename, onSkinChange,
+  onCustomTextureChange, onCustomTextureRemove, onErase }: SettingsPanelProps) {
   const [name, setName] = useState(ownerName);
   const [eraseArmed, setEraseArmed] = useState(false);
+  const [textureError, setTextureError] = useState("");
+  const [textureBusy, setTextureBusy] = useState(false);
   const normalized = normalizeName(name);
 
   function save(event: FormEvent) {
@@ -32,6 +39,21 @@ export function SettingsPanel({ ownerName, nucleusSkin, onClose, onRename, onSki
     }
     await onErase();
     onClose();
+  }
+
+  async function uploadTexture(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setTextureBusy(true);
+    setTextureError("");
+    try {
+      onCustomTextureChange(await prepareCustomTexture(file));
+    } catch (error) {
+      setTextureError(error instanceof Error ? error.message : "Texture işlenemedi.");
+    } finally {
+      setTextureBusy(false);
+    }
   }
 
   return (
@@ -54,10 +76,23 @@ export function SettingsPanel({ ownerName, nucleusSkin, onClose, onRename, onSki
             <b>{planet.name}</b><small>{planet.description}</small>
           </label>)}
         </div>
+        <section className={`custom-texture${nucleusSkin === "custom" ? " is-selected" : ""}`}>
+          <span className="custom-texture__preview" style={customTexture ? { backgroundImage: `url(${customTexture.dataUrl})` } : undefined} aria-hidden="true" />
+          <div><b>{customTexture?.name ?? "Kendi texture'ını kullan"}</b>
+            <small>PNG, JPEG veya WebP · en fazla 4 MB</small></div>
+          <label className="custom-texture__upload" htmlFor="custom-texture-file">{textureBusy ? "İşleniyor…" : customTexture ? "Değiştir" : "Yükle"}</label>
+          <input id="custom-texture-file" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Özel texture yükle"
+            disabled={textureBusy} onChange={uploadTexture} />
+          {customTexture && <div className="custom-texture__actions">
+            <button type="button" onClick={() => onSkinChange("custom")} disabled={nucleusSkin === "custom"}>Kullan</button>
+            <button type="button" onClick={onCustomTextureRemove}>Kaldır</button>
+          </div>}
+          {textureError && <p role="alert">{textureError}</p>}
+        </section>
       </fieldset>
       <section className="privacy-card">
         <h3>Mahremiyet</h3>
-        <p>İsimler ve anket yanıtları bu tarayıcı profilindeki IndexedDB alanında saklanır; başka cihazlara gönderilmez.</p>
+        <p>İsimler, anket yanıtları ve yüklediğin texture bu tarayıcı profilindeki IndexedDB alanında saklanır; başka cihazlara gönderilmez.</p>
       </section>
       <section className="danger-zone">
         <h3>Tüm verileri sil</h3>

@@ -1,4 +1,4 @@
-import { CanvasTexture, Color, LinearFilter, SRGBColorSpace } from "three";
+import { CanvasTexture, Color, LinearFilter, SRGBColorSpace, TextureLoader, type Texture } from "three";
 import type { PlanetDefinition } from "../domain/planets";
 
 const WIDTH = 512;
@@ -59,7 +59,7 @@ function drawEarth(context: CanvasRenderingContext2D) {
 }
 
 function drawPlanetDetails(context: CanvasRenderingContext2D, planet: PlanetDefinition) {
-  if (planet.id === "mercury" || planet.id === "mars") drawCraters(context, planet);
+  if (planet.id === "mercury" || planet.id === "mars" || planet.id === "moon") drawCraters(context, planet);
   if (planet.id === "earth") drawEarth(context);
   if (planet.id === "jupiter") drawSpot(context, 364, 170, 38, "#9d3f2f", .72);
   if (planet.id === "neptune") drawSpot(context, 330, 138, 24, "#17215f", .55);
@@ -84,6 +84,15 @@ export function createPlanetTexture(planet: PlanetDefinition): CanvasTexture {
   fillBase(context, planet);
   drawPlanetDetails(context, planet);
   const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  texture.minFilter = LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+/** Prosedürel veya kullanıcı kaynaklı çekirdek texture'ını güvenli Three.js biçiminde oluşturur. */
+export function createNucleusTexture(planet: PlanetDefinition, customUrl?: string): Texture {
+  const texture = customUrl ? new TextureLoader().load(customUrl) : createPlanetTexture(planet);
   texture.colorSpace = SRGBColorSpace;
   texture.minFilter = LinearFilter;
   texture.needsUpdate = true;

@@ -35,6 +35,16 @@
 .planet-swatch--saturn i { border: 2px solid #cdb47c; border-radius: 50%; height: 15px; left: -7px; position: absolute; top: 11px; transform: rotate(-16deg); width: 50px; }
 .planet-swatch--uranus { --planet: linear-gradient(#d9fbf5,#68c1c6); --glow: #75d6d6; }
 .planet-swatch--neptune { --planet: repeating-linear-gradient(0deg,#17328e 0 7px,#4778e9 8px 12px); --glow: #3b66df; }
+.planet-swatch--moon { --planet: radial-gradient(circle at 65% 65%,#56565a 0 8%,transparent 9%),radial-gradient(circle at 30% 35%,#8b8985 0 12%,transparent 13%),#c8c5be; --glow: #b7bbca; }
+.custom-texture { align-items: center; background: rgba(255,255,255,.025); border: 1px dashed rgba(169,141,255,.38); border-radius: 14px; display: grid; gap: 10px; grid-template-columns: auto 1fr auto; margin-top: 10px; padding: 12px; }
+.custom-texture.is-selected { background: rgba(169,141,255,.08); border-color: var(--violet); }
+.custom-texture__preview { background: radial-gradient(circle at 35% 30%,#d7c5ff,#7259a6 48%,#24203b); background-position: center; background-size: cover; border-radius: 50%; box-shadow: inset -7px -5px 10px rgba(0,0,0,.38), 0 0 12px rgba(169,141,255,.5); height: 38px; width: 38px; }
+.custom-texture b, .custom-texture small { display: block; }.custom-texture b { font-size: 10px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.custom-texture small { color: #77798c; font-size: 7px; margin-top: 3px; }
+.custom-texture > input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.custom-texture__upload { background: rgba(169,141,255,.12); border: 1px solid rgba(169,141,255,.35); border-radius: 999px; cursor: pointer; font-size: 9px; padding: 7px 10px; }
+.custom-texture:focus-within { outline: 2px solid var(--amber); outline-offset: 2px; }
+.custom-texture__actions { display: flex; gap: 7px; grid-column: 2 / 4; }.custom-texture__actions button { background: none; border: 0; color: #aaaabd; cursor: pointer; font-size: 8px; padding: 0; text-decoration: underline; }.custom-texture__actions button:disabled { color: var(--violet); cursor: default; text-decoration: none; }
+.custom-texture > p { color: #ff9da8; font-size: 8px; grid-column: 1 / -1; margin: 0; }
 .privacy-card, .danger-zone { border: 1px solid var(--line); border-radius: 16px; margin-top: 24px; padding: 18px; }
 .privacy-card p, .danger-zone p { color: #858798; font-size: 11px; line-height: 1.6; margin: 0 0 15px; }
 .danger-zone { border-color: rgba(239,101,115,.22); }.danger-zone .button { width: 100%; }

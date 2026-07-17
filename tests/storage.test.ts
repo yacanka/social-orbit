@@ -8,6 +8,7 @@ const validState: AppState = {
   schemaVersion: 1,
   ownerName: "Ada",
   nucleusSkin: "earth",
+  customTexture: null,
   people: [{
     id: "person-1",
     name: "Deniz",
@@ -39,5 +40,14 @@ describe("IndexedDB depolaması", () => {
     const legacyState = { schemaVersion: validState.schemaVersion, ownerName: validState.ownerName, people: validState.people };
     await database.put("state", legacyState, "current");
     expect((await loadState()).nucleusSkin).toBe("sun");
+    expect((await loadState()).customTexture).toBeNull();
+  });
+
+  it("özel texture kaydını doğrulanmış durumla birlikte korur", async () => {
+    const texturedState: AppState = { ...validState, nucleusSkin: "custom", customTexture: {
+      name: "galaksi.jpg", dataUrl: "data:image/jpeg;base64,AA==", updatedAt: "2026-07-18T00:00:00.000Z",
+    } };
+    await saveState(texturedState);
+    expect(await loadState()).toEqual(texturedState);
   });
 });

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { derivePlacements } from "../app/domain/placement";
+import { PLANETS, getPlanet } from "../app/domain/planets";
 import { calculateScore, normalizeName } from "../app/domain/scoring";
 import type { Person, SurveyAnswer } from "../app/domain/types";
 
@@ -43,5 +44,12 @@ describe("orbital yerleşimi", () => {
     const promotedId = derivePlacements(people).find(({ shell }) => shell === "free")?.person.id;
     const afterDelete = derivePlacements(people.slice(1));
     expect(afterDelete.find(({ person: item }) => item.id === promotedId)?.shell).toBe(3);
+  });
+});
+
+describe("çekirdek gök cisimleri", () => {
+  it("Ay'ı ve farklı atmosfer profillerini sunar", () => {
+    expect(getPlanet("moon").name).toBe("Ay");
+    expect(new Set(PLANETS.map(({ atmosphere }) => atmosphere.style)).size).toBeGreaterThan(4);
   });
 });

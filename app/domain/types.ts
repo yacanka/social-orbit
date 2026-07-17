@@ -9,7 +9,15 @@ export type PlanetSkin =
   | "jupiter"
   | "saturn"
   | "uranus"
-  | "neptune";
+  | "neptune"
+  | "moon"
+  | "custom";
+
+export interface CustomTexture {
+  name: string;
+  dataUrl: string;
+  updatedAt: string;
+}
 
 export type Shell = 1 | 2 | 3 | "free";
 
@@ -34,6 +42,7 @@ export interface AppState {
   schemaVersion: 1;
   ownerName: string;
   nucleusSkin: PlanetSkin;
+  customTexture: CustomTexture | null;
   people: Person[];
 }
 
@@ -41,5 +50,6 @@ export const EMPTY_STATE: AppState = {
   schemaVersion: 1,
   ownerName: "",
   nucleusSkin: "sun",
+  customTexture: null,
   people: [],
 };

@@ -9,6 +9,7 @@ import { AtomScene } from "./AtomScene";
 interface OrbitSceneProps {
   ownerName: string;
   nucleusSkin: PlanetSkin;
+  customTextureUrl?: string;
   placements: Placement[];
   paused: boolean;
   onSelect: (id: string) => void;

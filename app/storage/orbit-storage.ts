@@ -15,10 +15,17 @@ const personSchema = z.object({
   updatedAt: z.string(),
 });
 
+const customTextureSchema = z.object({
+  name: z.string().min(1).max(120),
+  dataUrl: z.string().startsWith("data:image/").max(2_500_000),
+  updatedAt: z.string(),
+});
+
 const stateSchema = z.object({
   schemaVersion: z.literal(1),
   ownerName: z.string().max(60),
-  nucleusSkin: z.enum(["sun", "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune"]).default("sun"),
+  nucleusSkin: z.enum(["sun", "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "custom"]).default("sun"),
+  customTexture: customTextureSchema.nullable().default(null),
   people: z.array(personSchema),
 });
 

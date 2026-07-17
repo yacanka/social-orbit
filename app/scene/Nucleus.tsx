@@ -1,18 +1,19 @@
 "use client";
 
-import { Sparkles } from "@react-three/drei/core/Sparkles.js";
 import { Html } from "@react-three/drei/web/Html.js";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import { AdditiveBlending, BackSide, type Group } from "three";
+import { type Group } from "three";
 import { getPlanet } from "../domain/planets";
 import type { PlanetSkin } from "../domain/types";
-import { createPlanetTexture } from "./planet-texture";
+import { Atmosphere } from "./Atmosphere";
+import { createNucleusTexture } from "./planet-texture";
 
 interface NucleusProps {
   ownerName: string;
   paused: boolean;
   skin: PlanetSkin;
+  customTextureUrl?: string;
 }
 
 function SaturnRing() {
@@ -22,20 +23,12 @@ function SaturnRing() {
   </mesh>;
 }
 
-function Atmosphere({ color }: { color: string }) {
-  return <>
-    <mesh scale={1.1}><sphereGeometry args={[1.05, 40, 40]} />
-      <meshBasicMaterial color={color} side={BackSide} transparent opacity={.18} blending={AdditiveBlending} /></mesh>
-    <mesh scale={1.34}><sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial color={color} transparent opacity={.045} blending={AdditiveBlending} /></mesh>
-  </>;
-}
-
 /** Seçilen gök cismini merkez çekirdeği olarak çizer ve hareketlendirir. */
-export function Nucleus({ ownerName, paused, skin }: NucleusProps) {
+export function Nucleus({ ownerName, paused, skin, customTextureUrl }: NucleusProps) {
   const group = useRef<Group>(null);
   const planet = getPlanet(skin);
-  const texture = useMemo(() => createPlanetTexture(planet), [planet]);
+  const source = skin === "custom" ? customTextureUrl : undefined;
+  const texture = useMemo(() => createNucleusTexture(planet, source), [planet, source]);
 
   useEffect(() => () => texture.dispose(), [texture]);
   useFrame((_, delta) => {
@@ -47,9 +40,8 @@ export function Nucleus({ ownerName, paused, skin }: NucleusProps) {
       <meshStandardMaterial map={texture} color="#ffffff" emissive={planet.emissive} emissiveMap={texture}
         emissiveIntensity={planet.emissiveIntensity} roughness={planet.roughness} metalness={.03} /></mesh>
     {planet.hasRing && <SaturnRing />}
-    <Atmosphere color={planet.colors[0]} />
-    <pointLight color={planet.colors[0]} intensity={skin === "sun" ? 42 : 22} distance={15} decay={2} />
-    <Sparkles count={skin === "sun" ? 42 : 22} scale={3.4} size={2.4} speed={paused ? 0 : .22} color={planet.colors[0]} />
+    <Atmosphere planet={planet} paused={paused} />
+    <pointLight color={planet.atmosphere.color} intensity={skin === "sun" ? 42 : skin === "moon" ? 10 : 22} distance={15} decay={2} />
     <Html center position={[0, -1.72, 0]}><div className="owner-label"><span>{planet.name.toLocaleUpperCase("tr-TR")}</span>{ownerName}</div></Html>
   </group>;
 }
