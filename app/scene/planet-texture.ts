@@ -1,4 +1,4 @@
-import { CanvasTexture, Color, LinearFilter, SRGBColorSpace, TextureLoader, type Texture } from "three";
+import { CanvasTexture, Color, ImageLoader, LinearFilter, SRGBColorSpace, type Texture } from "three";
 import type { PlanetDefinition } from "../domain/planets";
 
 const WIDTH = 512;
@@ -90,11 +90,22 @@ export function createPlanetTexture(planet: PlanetDefinition): CanvasTexture {
   return texture;
 }
 
-/** Prosedürel veya kullanıcı kaynaklı çekirdek texture'ını güvenli Three.js biçiminde oluşturur. */
-export function createNucleusTexture(planet: PlanetDefinition, customUrl?: string): Texture {
-  const texture = customUrl ? new TextureLoader().load(customUrl) : createPlanetTexture(planet);
+function configureTexture(texture: Texture): Texture {
   texture.colorSpace = SRGBColorSpace;
   texture.minFilter = LinearFilter;
   texture.needsUpdate = true;
   return texture;
+}
+
+/** Resim kaynağını yükler; kaynak yoksa veya bozuksa prosedürel texture'a geri döner. */
+export function createNucleusTexture(planet: PlanetDefinition, source?: string): Texture {
+  const fallback = createPlanetTexture(planet);
+  if (!source) return fallback;
+  const texture: Texture<HTMLCanvasElement | HTMLImageElement> = fallback.clone();
+  new ImageLoader().load(source, (image) => {
+    texture.image = image;
+    configureTexture(texture);
+    fallback.dispose();
+  }, undefined, () => fallback.dispose());
+  return configureTexture(texture);
 }

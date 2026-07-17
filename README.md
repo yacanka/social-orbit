@@ -27,6 +27,31 @@ This starter does not use `wrangler.jsonc`.
 - `examples/d1/` contains an optional D1 example surface
 - `drizzle.config.ts` supports local migration generation when needed
 
+## Standard Planet Textures
+
+Optional textures for the built-in celestial bodies are configured in
+`app/domain/planet-textures.ts`. Leave the map empty to keep the procedural
+fallbacks.
+
+Use a same-origin file from `public/`:
+
+```ts
+export const PLANET_TEXTURES = {
+  earth: { kind: "path", value: "/textures/earth.jpg" },
+};
+```
+
+Or use raw Base64 with an explicit image type:
+
+```ts
+export const PLANET_TEXTURES = {
+  mars: { kind: "base64", mimeType: "image/jpeg", value: "..." },
+};
+```
+
+PNG, JPEG, and WebP data URLs are also accepted. Invalid paths, unsupported
+formats, and failed image loads automatically use the procedural texture.
+
 ## Workspace Auth Headers
 
 OpenAI workspace sites can read the current user's email from

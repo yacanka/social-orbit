@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { type Group } from "three";
 import { getPlanet } from "../domain/planets";
+import { getPlanetTextureSource } from "../domain/planet-textures";
 import type { PlanetSkin } from "../domain/types";
 import { Atmosphere } from "./Atmosphere";
 import { createNucleusTexture } from "./planet-texture";
@@ -27,7 +28,7 @@ function SaturnRing() {
 export function Nucleus({ ownerName, paused, skin, customTextureUrl }: NucleusProps) {
   const group = useRef<Group>(null);
   const planet = getPlanet(skin);
-  const source = skin === "custom" ? customTextureUrl : undefined;
+  const source = skin === "custom" ? customTextureUrl : getPlanetTextureSource(skin);
   const texture = useMemo(() => createNucleusTexture(planet, source), [planet, source]);
 
   useEffect(() => () => texture.dispose(), [texture]);
