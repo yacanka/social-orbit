@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { freePosition, isFreePositionSafe } from "../app/scene/motion";
-import { orbitParticlePositions, orbitTrailPosition } from "../app/scene/orbit-visual";
+import { getOrbitDensityProfile, orbitParticlePositions, orbitTrailPosition } from "../app/scene/orbit-visual";
 
 describe("serbest evren hareketi", () => {
   it("kişileri orbital güvenlik alanı ile evren sınırı arasında tutar", () => {
@@ -31,5 +31,13 @@ describe("orbital enerji görselleri", () => {
       expect(Math.hypot(x, z)).toBeCloseTo(12.1, 5);
       expect(y).toBe(0);
     }
+  });
+
+  it("yoğunluğu artırırken orbital ana çizgiyi geri planda tutar", () => {
+    const calm = getOrbitDensityProfile("calm");
+    const dense = getOrbitDensityProfile("dense");
+    expect(dense.particleMultiplier).toBeGreaterThan(calm.particleMultiplier);
+    expect(dense.trailCount).toBeGreaterThan(calm.trailCount);
+    expect(dense.lineOpacity).toBeLessThanOrEqual(.2);
   });
 });

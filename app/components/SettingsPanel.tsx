@@ -3,24 +3,32 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { PLANETS } from "../domain/planets";
 import { normalizeName } from "../domain/scoring";
-import type { CustomTexture, PlanetSkin } from "../domain/types";
+import type { CustomTexture, OrbitalDensity, PlanetSkin } from "../domain/types";
 import { prepareCustomTexture } from "./custom-texture";
+
+const DENSITY_OPTIONS = [
+  ["calm", "Sakin", "Daha az parçacık"],
+  ["balanced", "Dengeli", "Önerilen görünüm"],
+  ["dense", "Yoğun", "Daha canlı enerji"],
+] as const;
 
 interface SettingsPanelProps {
   ownerName: string;
   nucleusSkin: PlanetSkin;
   customTexture: CustomTexture | null;
+  orbitalDensity: OrbitalDensity;
   onClose: () => void;
   onRename: (name: string) => void;
   onSkinChange: (skin: PlanetSkin) => void;
   onCustomTextureChange: (texture: CustomTexture) => void;
   onCustomTextureRemove: () => void;
+  onDensityChange: (density: OrbitalDensity) => void;
   onErase: () => Promise<void>;
 }
 
 /** Merkez adını ve cihazdaki veri yaşam döngüsünü yönetir. */
-export function SettingsPanel({ ownerName, nucleusSkin, customTexture, onClose, onRename, onSkinChange,
-  onCustomTextureChange, onCustomTextureRemove, onErase }: SettingsPanelProps) {
+export function SettingsPanel({ ownerName, nucleusSkin, customTexture, orbitalDensity, onClose, onRename, onSkinChange,
+  onCustomTextureChange, onCustomTextureRemove, onDensityChange, onErase }: SettingsPanelProps) {
   const [name, setName] = useState(ownerName);
   const [eraseArmed, setEraseArmed] = useState(false);
   const [textureError, setTextureError] = useState("");
@@ -65,6 +73,15 @@ export function SettingsPanel({ ownerName, nucleusSkin, customTexture, onClose, 
         <input id="settings-name" value={name} maxLength={60} onChange={(event) => setName(event.target.value)} />
         <button className="button button--primary" disabled={!normalized}>İsmi güncelle</button>
       </form>
+      <fieldset className="density-picker">
+        <legend>Orbital yoğunluk</legend>
+        <p>Yörüngelerdeki enerji parçacığı ve ışık izi miktarını seç.</p>
+        <div>{DENSITY_OPTIONS.map(([value, label, description]) => <label key={value} className={orbitalDensity === value ? "is-selected" : ""}>
+            <input type="radio" name="orbital-density" value={value} checked={orbitalDensity === value}
+              onChange={() => onDensityChange(value)} />
+            <b>{label}</b><small>{description}</small>
+          </label>)}</div>
+      </fieldset>
       <fieldset className="skin-picker">
         <legend>Çekirdek görünümü</legend>
         <p>Merkezindeki gezegeni seç. Değişiklik anında evrenine uygulanır.</p>

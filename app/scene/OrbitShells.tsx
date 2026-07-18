@@ -3,7 +3,8 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { AdditiveBlending, type Group } from "three";
-import { orbitParticlePositions, orbitTrailPosition } from "./orbit-visual";
+import type { OrbitalDensity } from "../domain/types";
+import { getOrbitDensityProfile, orbitParticlePositions, orbitTrailPosition } from "./orbit-visual";
 
 const SHELLS = [
   { shell: 1, radius: 4.4, color: "#f9c87b", rotation: [0.28, 0, 0.18] },
@@ -17,19 +18,22 @@ interface OrbitShellProps {
   rotation: readonly [number, number, number];
   paused: boolean;
   index: number;
+  density: OrbitalDensity;
 }
 
-function EnergyTrail({ color }: Pick<OrbitShellProps, "color">) {
-  return <>{Array.from({ length: 7 }, (_, index) => <mesh key={index} scale={1 - index * .1}>
+function EnergyTrail({ color, count }: Pick<OrbitShellProps, "color"> & { count: number }) {
+  return <>{Array.from({ length: count }, (_, index) => <mesh key={index} scale={1 - index * .075}>
     <sphereGeometry args={[.07, 10, 10]} />
     <meshBasicMaterial color={color} transparent opacity={.9 - index * .12} blending={AdditiveBlending} depthWrite={false} />
   </mesh>)}</>;
 }
 
-function OrbitShell({ radius, color, rotation, paused, index }: OrbitShellProps) {
+function OrbitShell({ radius, color, rotation, paused, index, density }: OrbitShellProps) {
   const trail = useRef<Group>(null);
   const arc = useRef<Group>(null);
-  const particles = useMemo(() => orbitParticlePositions(radius, 82 - index * 12), [radius, index]);
+  const profile = getOrbitDensityProfile(density);
+  const count = Math.round((82 - index * 12) * profile.particleMultiplier);
+  const particles = useMemo(() => orbitParticlePositions(radius, count), [radius, count]);
   useFrame(({ clock }) => {
     const time = paused ? 0 : clock.getElapsedTime();
     const angle = time * (.2 - index * .028) + index * 2.1;
@@ -38,16 +42,16 @@ function OrbitShell({ radius, color, rotation, paused, index }: OrbitShellProps)
   });
   return <group rotation={rotation}>
     <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[radius, .012, 6, 240]} />
-      <meshBasicMaterial color={color} transparent opacity={.13} depthWrite={false} /></mesh>
+      <meshBasicMaterial color={color} transparent opacity={profile.lineOpacity} depthWrite={false} /></mesh>
     <points><bufferGeometry><bufferAttribute attach="attributes-position" args={[particles, 3]} /></bufferGeometry>
-      <pointsMaterial color={color} size={.045} transparent opacity={.34} sizeAttenuation blending={AdditiveBlending} depthWrite={false} /></points>
+      <pointsMaterial color={color} size={.045} transparent opacity={profile.particleOpacity} sizeAttenuation blending={AdditiveBlending} depthWrite={false} /></points>
     <group ref={arc}><mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[radius, .035, 5, 72, .48]} />
-      <meshBasicMaterial color={color} transparent opacity={.22} blending={AdditiveBlending} depthWrite={false} /></mesh></group>
-    <group ref={trail}><EnergyTrail color={color} /></group>
+      <meshBasicMaterial color={color} transparent opacity={profile.arcOpacity} blending={AdditiveBlending} depthWrite={false} /></mesh></group>
+    <group ref={trail}><EnergyTrail color={color} count={profile.trailCount} /></group>
   </group>;
 }
 
 /** İnce çizgiler, parçacıklar ve enerji kuyruklarıyla atomik kabukları çizer. */
-export function OrbitShells({ paused }: { paused: boolean }) {
-  return <>{SHELLS.map((shell, index) => <OrbitShell {...shell} index={index} paused={paused} key={shell.shell} />)}</>;
+export function OrbitShells({ paused, density }: { paused: boolean; density: OrbitalDensity }) {
+  return <>{SHELLS.map((shell, index) => <OrbitShell {...shell} index={index} paused={paused} density={density} key={shell.shell} />)}</>;
 }

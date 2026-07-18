@@ -1,5 +1,7 @@
 export type SurveyAnswer = 1 | 2 | 3 | 4 | 5;
 
+export type OrbitalDensity = "calm" | "balanced" | "dense";
+
 export type PlanetSkin =
   | "sun"
   | "mercury"
@@ -43,6 +45,7 @@ export interface AppState {
   ownerName: string;
   nucleusSkin: PlanetSkin;
   customTexture: CustomTexture | null;
+  orbitalDensity: OrbitalDensity;
   people: Person[];
 }
 
@@ -51,5 +54,6 @@ export const EMPTY_STATE: AppState = {
   ownerName: "",
   nucleusSkin: "sun",
   customTexture: null,
+  orbitalDensity: "balanced",
   people: [],
 };

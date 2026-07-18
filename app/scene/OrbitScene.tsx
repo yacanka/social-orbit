@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
-import type { Placement, PlanetSkin } from "../domain/types";
+import type { OrbitalDensity, Placement, PlanetSkin } from "../domain/types";
 import { AccessiblePeopleList } from "../components/AccessiblePeopleList";
 import { AtomScene } from "./AtomScene";
 
@@ -10,6 +10,8 @@ interface OrbitSceneProps {
   ownerName: string;
   nucleusSkin: PlanetSkin;
   customTextureUrl?: string;
+  orbitalDensity: OrbitalDensity;
+  selectedId?: string;
   placements: Placement[];
   paused: boolean;
   onSelect: (id: string) => void;

@@ -1,3 +1,24 @@
+import type { OrbitalDensity } from "../domain/types";
+
+export interface OrbitDensityProfile {
+  particleMultiplier: number;
+  trailCount: number;
+  lineOpacity: number;
+  particleOpacity: number;
+  arcOpacity: number;
+}
+
+const DENSITY_PROFILES: Record<OrbitalDensity, OrbitDensityProfile> = {
+  calm: { particleMultiplier: .55, trailCount: 4, lineOpacity: .07, particleOpacity: .2, arcOpacity: .12 },
+  balanced: { particleMultiplier: 1, trailCount: 7, lineOpacity: .13, particleOpacity: .34, arcOpacity: .22 },
+  dense: { particleMultiplier: 1.45, trailCount: 9, lineOpacity: .16, particleOpacity: .48, arcOpacity: .3 },
+};
+
+/** Seçilen orbital yoğunluğa karşılık gelen güvenli görsel profili döndürür. */
+export function getOrbitDensityProfile(density: OrbitalDensity): OrbitDensityProfile {
+  return DENSITY_PROFILES[density];
+}
+
 /** Belirli yarıçapta eşit aralıklı yörünge parçacıklarını üretir. */
 export function orbitParticlePositions(radius: number, count: number): Float32Array {
   const positions = new Float32Array(count * 3);

@@ -31,6 +31,7 @@
 .person-label { align-items: center; backdrop-filter: blur(8px); background: rgba(8,9,22,.72); border: 1px solid rgba(255,255,255,.13); border-radius: 999px; cursor: pointer; display: flex; font-size: 10px; gap: 7px; padding: 5px 6px 5px 10px; white-space: nowrap; }
 .person-label span { background: rgba(255,255,255,.09); border-radius: 999px; color: var(--amber); font-size: 8px; padding: 3px 5px; }
 .person-label--free { opacity: .72; }
+.person-label--selected { border-color: rgba(255,255,255,.38); box-shadow: 0 0 18px rgba(157,131,247,.18); }
 .owner-label { color: #fff3dd; font-size: 13px; font-weight: 700; text-align: center; text-shadow: 0 2px 14px #000; white-space: nowrap; }
 .owner-label span { color: var(--amber); display: block; font-size: 6px; letter-spacing: .26em; margin-bottom: 2px; }
 .scene-loading, .app-loading { align-items: center; display: flex; inset: 0; justify-content: center; position: fixed; }

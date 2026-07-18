@@ -13,6 +13,14 @@
 .answer-row span { color: #8d8fa1; font-size: 10px; line-height: 1.4; }.answer-row strong { color: var(--amber); font-size: 10px; }
 .panel-actions { display: grid; gap: 9px; margin-top: 25px; }.panel-actions .button { width: 100%; }
 .settings-form { display: grid; gap: 10px; }.settings-form label { color: #aaaabd; font-size: 11px; }.settings-form .button { margin-top: 6px; }
+.density-picker { border: 0; border-top: 1px solid var(--line); margin: 25px 0 0; padding: 22px 0 0; }
+.density-picker legend { float: left; font-size: 12px; font-weight: 700; letter-spacing: .05em; width: 100%; }
+.density-picker > p { clear: both; color: #858798; font-size: 10px; line-height: 1.5; margin: 9px 0 13px; padding-top: 6px; }
+.density-picker > div { display: grid; gap: 7px; grid-template-columns: repeat(3, 1fr); }
+.density-picker label { background: rgba(255,255,255,.025); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; padding: 10px 8px; position: relative; text-align: center; }
+.density-picker label.is-selected { background: rgba(104,216,247,.08); border-color: rgba(104,216,247,.55); }
+.density-picker input { height: 1px; opacity: 0; position: absolute; width: 1px; }.density-picker input:focus-visible + b { outline: 2px solid var(--amber); outline-offset: 3px; }
+.density-picker b, .density-picker small { display: block; }.density-picker b { font-size: 9px; }.density-picker small { color: #77798c; font-size: 7px; line-height: 1.3; margin-top: 3px; }
 .skin-picker { border: 0; border-top: 1px solid var(--line); margin: 25px 0 0; padding: 22px 0 0; }
 .skin-picker legend { float: left; font-size: 12px; font-weight: 700; letter-spacing: .05em; width: 100%; }
 .skin-picker > p { clear: both; color: #858798; font-size: 10px; line-height: 1.5; margin: 9px 0 14px; padding-top: 6px; }

@@ -9,6 +9,7 @@ const validState: AppState = {
   ownerName: "Ada",
   nucleusSkin: "earth",
   customTexture: null,
+  orbitalDensity: "balanced",
   people: [{
     id: "person-1",
     name: "Deniz",
@@ -41,6 +42,7 @@ describe("IndexedDB depolaması", () => {
     await database.put("state", legacyState, "current");
     expect((await loadState()).nucleusSkin).toBe("sun");
     expect((await loadState()).customTexture).toBeNull();
+    expect((await loadState()).orbitalDensity).toBe("balanced");
   });
 
   it("özel texture kaydını doğrulanmış durumla birlikte korur", async () => {

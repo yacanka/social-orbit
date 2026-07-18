@@ -26,6 +26,7 @@ const stateSchema = z.object({
   ownerName: z.string().max(60),
   nucleusSkin: z.enum(["sun", "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "custom"]).default("sun"),
   customTexture: customTextureSchema.nullable().default(null),
+  orbitalDensity: z.enum(["calm", "balanced", "dense"]).default("balanced"),
   people: z.array(personSchema),
 });
 

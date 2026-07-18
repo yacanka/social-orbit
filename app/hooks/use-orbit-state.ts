@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { calculateScore, normalizeName } from "../domain/scoring";
-import { EMPTY_STATE, type AppState, type CustomTexture, type Person, type PlanetSkin, type SurveyAnswer } from "../domain/types";
+import { EMPTY_STATE, type AppState, type CustomTexture, type OrbitalDensity, type Person, type PlanetSkin, type SurveyAnswer } from "../domain/types";
 import { clearState, loadState, saveState } from "../storage/orbit-storage";
 
 function createPerson(name: string, answers: SurveyAnswer[]): Person {
@@ -51,6 +51,10 @@ export function useOrbitState() {
     setState((current) => ({ ...current, customTexture: null, nucleusSkin: current.nucleusSkin === "custom" ? "sun" : current.nucleusSkin }));
   }, []);
 
+  const setOrbitalDensity = useCallback((orbitalDensity: OrbitalDensity) => {
+    setState((current) => ({ ...current, orbitalDensity }));
+  }, []);
+
   const addPerson = useCallback((name: string, answers: SurveyAnswer[]) => {
     setState((current) => ({ ...current, people: [...current.people, createPerson(name, answers)] }));
   }, []);
@@ -75,6 +79,6 @@ export function useOrbitState() {
     setState(EMPTY_STATE);
   }, []);
 
-  return { state, ready, setOwnerName, setNucleusSkin, setCustomTexture, removeCustomTexture,
+  return { state, ready, setOwnerName, setNucleusSkin, setCustomTexture, removeCustomTexture, setOrbitalDensity,
     addPerson, updatePerson, deletePerson, eraseAll };
 }
