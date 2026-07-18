@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import type { Group } from "three";
 import type { Placement } from "../domain/types";
+import { AtomicMarker } from "./AtomicMarker";
 import { freePosition } from "./motion";
 
 interface PersonNodeProps {
@@ -31,7 +32,7 @@ function OrbitalNode({ placement, paused, onSelect }: PersonNodeProps) {
   });
 
   return <group rotation={ROTATIONS[shell]}>
-    <NodeVisual ref={group} placement={placement} color={COLORS[shell]} onSelect={onSelect} />
+    <NodeVisual ref={group} placement={placement} color={COLORS[shell]} paused={paused} onSelect={onSelect} />
   </group>;
 }
 
@@ -42,25 +43,23 @@ function FreeNode({ placement, paused, onSelect }: PersonNodeProps) {
     const position = freePosition(placement.seed, paused ? 0 : clock.getElapsedTime());
     group.current.position.set(...position);
   });
-  return <NodeVisual ref={group} placement={placement} color="#8a9bb7" onSelect={onSelect} free />;
+  return <NodeVisual ref={group} placement={placement} color="#8a9bb7" paused={paused} onSelect={onSelect} free />;
 }
 
 interface NodeVisualProps {
   ref: React.Ref<Group>;
   placement: Placement;
   color: string;
+  paused: boolean;
   free?: boolean;
   onSelect: (id: string) => void;
 }
 
-function NodeVisual({ ref, placement, color, free, onSelect }: NodeVisualProps) {
+function NodeVisual({ ref, placement, color, paused, free, onSelect }: NodeVisualProps) {
   const select = () => onSelect(placement.person.id);
   return <group ref={ref}>
-    <mesh onClick={select} onPointerDown={select} scale={free ? 0.72 : 0.9}>
-      <sphereGeometry args={[0.24, 18, 18]} />
-      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2.3} />
-    </mesh>
-    <pointLight color={color} intensity={free ? 0.3 : 0.65} distance={3} />
+    <AtomicMarker color={color} free={free} paused={paused} seed={placement.seed} onSelect={select} />
+    <pointLight color={color} intensity={free ? .28 : .8} distance={3.4} />
     <Html center distanceFactor={14} zIndexRange={[20, 0]}>
       <button className={`person-label${free ? " person-label--free" : ""}`} onClick={select} onPointerDown={select}>
         {placement.person.name}<span>{placement.person.score}</span>
