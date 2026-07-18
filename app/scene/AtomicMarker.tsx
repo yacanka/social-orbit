@@ -1,8 +1,9 @@
 "use client";
 
-import { useFrame, type ThreeEvent } from "@react-three/fiber";
-import { useRef } from "react";
-import { AdditiveBlending, MathUtils, type Group } from "three";
+import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
+import { useCallback, useEffect, useRef } from "react";
+import { AdditiveBlending, MathUtils, Vector3, type Group } from "three";
+import { isScreenPointHovered, isVisibleDepth } from "./hover-proximity";
 import { SelectionBurst } from "./SelectionBurst";
 
 interface AtomicMarkerProps {
@@ -28,14 +29,51 @@ function ElectronRing({ color, rotation, index }: { color: string; rotation: rea
   </group>;
 }
 
-function HitTarget({ onHoverChange, onSelect }: Pick<AtomicMarkerProps, "onHoverChange" | "onSelect">) {
-  const enter = (event: ThreeEvent<PointerEvent>) => { event.stopPropagation(); onHoverChange(true); };
-  const leave = (event: ThreeEvent<PointerEvent>) => { event.stopPropagation(); onHoverChange(false); };
+function ClickTarget({ onSelect }: Pick<AtomicMarkerProps, "onSelect">) {
   const select = (event: ThreeEvent<MouseEvent>) => { event.stopPropagation(); onSelect(); };
-  return <mesh onPointerOver={enter} onPointerOut={leave} onClick={select}>
+  return <mesh onClick={select}>
     <sphereGeometry args={[.48, 14, 14]} />
     <meshBasicMaterial transparent opacity={0} colorWrite={false} depthWrite={false} />
   </mesh>;
+}
+
+function usePointerPresence(canvas: HTMLCanvasElement, reset: () => void) {
+  const active = useRef(false);
+  useEffect(() => {
+    const enter = () => { active.current = true; };
+    const leave = () => { active.current = false; reset(); };
+    canvas.addEventListener("pointermove", enter, { passive: true });
+    canvas.addEventListener("pointerleave", leave);
+    window.addEventListener("blur", leave);
+    return () => {
+      canvas.removeEventListener("pointermove", enter);
+      canvas.removeEventListener("pointerleave", leave);
+      window.removeEventListener("blur", leave);
+    };
+  }, [canvas, reset]);
+  return active;
+}
+
+function ScreenHoverSensor({ hovered, onHoverChange }: Pick<AtomicMarkerProps, "hovered" | "onHoverChange">) {
+  const target = useRef<Group>(null);
+  const current = useRef(hovered);
+  const projected = useRef(new Vector3());
+  const { camera, gl, pointer, size } = useThree();
+  const update = useCallback((next: boolean) => {
+    if (next === current.current) return;
+    current.current = next;
+    onHoverChange(next);
+  }, [onHoverChange]);
+  const reset = useCallback(() => update(false), [update]);
+  const pointerActive = usePointerPresence(gl.domElement, reset);
+  useFrame(() => {
+    if (!target.current) return;
+    target.current.getWorldPosition(projected.current).project(camera);
+    const visible = isVisibleDepth(projected.current.z);
+    const nearby = isScreenPointHovered(projected.current, pointer, { x: size.width, y: size.height }, current.current);
+    update(pointerActive.current && visible && nearby);
+  });
+  return <group ref={target} />;
 }
 
 /** Kişi düğümünü çekirdek, halo ve elektron yörüngelerinden oluşan mini atom olarak çizer. */
@@ -59,6 +97,7 @@ export function AtomicMarker({ color, free, paused, selected, hovered, seed, onS
       <meshBasicMaterial color={color} transparent opacity={.09} blending={AdditiveBlending} depthWrite={false} /></mesh>
     {rings.map((rotation, index) => <ElectronRing color={color} rotation={rotation} index={index} key={index} />)}
     <SelectionBurst color={color} paused={paused} selected={selected} />
-    <HitTarget onHoverChange={onHoverChange} onSelect={onSelect} />
+    <ScreenHoverSensor hovered={hovered} onHoverChange={onHoverChange} />
+    <ClickTarget onSelect={onSelect} />
   </group>;
 }

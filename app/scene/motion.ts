@@ -1,9 +1,9 @@
 const FREE_MIN_RADIUS = 15.5;
 export const UNIVERSE_RADIUS = 24;
 
-/** Duraklatılmış veya hover edilen düğümün hareket zamanını güvenle dondurur. */
-export function advanceMotionTime(time: number, delta: number, paused: boolean, hovered: boolean): number {
-  return paused || hovered ? time : time + delta;
+/** Duraklatma durumuna göre düğümün hareket zamanını ilerletir. */
+export function advanceMotionTime(time: number, delta: number, paused: boolean): number {
+  return paused ? time : time + delta;
 }
 
 function unitVector(seed: number, time: number): [number, number, number] {

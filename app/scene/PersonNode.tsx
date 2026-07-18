@@ -28,7 +28,7 @@ function OrbitalNode({ placement, paused, selected, onSelect }: PersonNodeProps)
 
   useFrame((_, delta) => {
     if (!group.current) return;
-    angle.current = advanceMotionTime(angle.current, delta * speed, paused, hovered);
+    angle.current = advanceMotionTime(angle.current, delta * speed, paused);
     group.current.position.set(Math.cos(angle.current) * RADII[shell], 0, Math.sin(angle.current) * RADII[shell]);
   });
 
@@ -44,7 +44,7 @@ function FreeNode({ placement, paused, selected, onSelect }: PersonNodeProps) {
   const [hovered, setHovered] = useState(false);
   useFrame((_, delta) => {
     if (!group.current) return;
-    motionTime.current = advanceMotionTime(motionTime.current, delta, paused, hovered);
+    motionTime.current = advanceMotionTime(motionTime.current, delta, paused);
     const position = freePosition(placement.seed, motionTime.current);
     group.current.position.set(...position);
   });

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { advanceMotionTime, freePosition, isFreePositionSafe } from "../app/scene/motion";
+import { isScreenPointHovered, isVisibleDepth } from "../app/scene/hover-proximity";
 import { getOrbitDensityProfile, orbitParticlePositions, orbitTrailPosition } from "../app/scene/orbit-visual";
 
 describe("serbest evren hareketi", () => {
@@ -15,10 +16,24 @@ describe("serbest evren hareketi", () => {
     expect(freePosition(42, 12.5)).toEqual(freePosition(42, 12.5));
   });
 
-  it("hover ve duraklatmada zamanı dondurup çıkışta kaldığı yerden sürdürür", () => {
-    expect(advanceMotionTime(4, .2, false, true)).toBe(4);
-    expect(advanceMotionTime(4, .2, true, false)).toBe(4);
-    expect(advanceMotionTime(4, .2, false, false)).toBeCloseTo(4.2);
+  it("yalnızca genel duraklatmada zamanı dondurur", () => {
+    expect(advanceMotionTime(4, .2, true)).toBe(4);
+    expect(advanceMotionTime(4, .2, false)).toBeCloseTo(4.2);
+  });
+});
+
+describe("ekran yakınlığı hover alanı", () => {
+  const viewport = { x: 1000, y: 800 };
+
+  it("girişten daha geniş çıkış alanı kullanarak titreşimi önler", () => {
+    const pointer = { x: 0, y: 0 };
+    expect(isScreenPointHovered({ x: .07, y: 0 }, pointer, viewport, false)).toBe(false);
+    expect(isScreenPointHovered({ x: .07, y: 0 }, pointer, viewport, true)).toBe(true);
+  });
+
+  it("yalnızca kamera kırpma alanındaki düğümleri kabul eder", () => {
+    expect(isVisibleDepth(0)).toBe(true);
+    expect(isVisibleDepth(1.1)).toBe(false);
   });
 });
 
