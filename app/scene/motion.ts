@@ -1,6 +1,11 @@
 const FREE_MIN_RADIUS = 15.5;
 export const UNIVERSE_RADIUS = 24;
 
+/** Duraklatılmış veya hover edilen düğümün hareket zamanını güvenle dondurur. */
+export function advanceMotionTime(time: number, delta: number, paused: boolean, hovered: boolean): number {
+  return paused || hovered ? time : time + delta;
+}
+
 function unitVector(seed: number, time: number): [number, number, number] {
   const phase = (seed % 997) / 997 * Math.PI * 2;
   const x = Math.sin(time * 0.19 + phase) + Math.cos(time * 0.11 + phase * 2) * 0.35;

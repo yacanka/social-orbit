@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { freePosition, isFreePositionSafe } from "../app/scene/motion";
+import { advanceMotionTime, freePosition, isFreePositionSafe } from "../app/scene/motion";
 import { getOrbitDensityProfile, orbitParticlePositions, orbitTrailPosition } from "../app/scene/orbit-visual";
 
 describe("serbest evren hareketi", () => {
@@ -13,6 +13,12 @@ describe("serbest evren hareketi", () => {
 
   it("aynı kimlik ve zamanda kararlı konum üretir", () => {
     expect(freePosition(42, 12.5)).toEqual(freePosition(42, 12.5));
+  });
+
+  it("hover ve duraklatmada zamanı dondurup çıkışta kaldığı yerden sürdürür", () => {
+    expect(advanceMotionTime(4, .2, false, true)).toBe(4);
+    expect(advanceMotionTime(4, .2, true, false)).toBe(4);
+    expect(advanceMotionTime(4, .2, false, false)).toBeCloseTo(4.2);
   });
 });
 

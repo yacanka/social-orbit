@@ -2,11 +2,11 @@
 
 import { Html } from "@react-three/drei/web/Html.js";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Group } from "three";
 import type { Placement } from "../domain/types";
 import { AtomicMarker } from "./AtomicMarker";
-import { freePosition } from "./motion";
+import { advanceMotionTime, freePosition } from "./motion";
 
 interface PersonNodeProps {
   placement: Placement;
@@ -21,30 +21,35 @@ const ROTATIONS = { 1: [0.28, 0, 0.18], 2: [-0.42, 0.16, -0.12], 3: [0.38, -0.22
 
 function OrbitalNode({ placement, paused, selected, onSelect }: PersonNodeProps) {
   const group = useRef<Group>(null);
+  const angle = useRef((placement.seed % 1000) / 1000 * Math.PI * 2);
+  const [hovered, setHovered] = useState(false);
   const shell = placement.shell as 1 | 2 | 3;
-  const phase = (placement.seed % 1000) / 1000 * Math.PI * 2;
   const speed = 0.13 - shell * 0.022;
 
-  useFrame(({ clock }) => {
+  useFrame((_, delta) => {
     if (!group.current) return;
-    const time = paused ? 0 : clock.getElapsedTime();
-    const angle = phase + time * speed;
-    group.current.position.set(Math.cos(angle) * RADII[shell], 0, Math.sin(angle) * RADII[shell]);
+    angle.current = advanceMotionTime(angle.current, delta * speed, paused, hovered);
+    group.current.position.set(Math.cos(angle.current) * RADII[shell], 0, Math.sin(angle.current) * RADII[shell]);
   });
 
   return <group rotation={ROTATIONS[shell]}>
-    <NodeVisual ref={group} placement={placement} color={COLORS[shell]} paused={paused} selected={selected} onSelect={onSelect} />
+    <NodeVisual ref={group} placement={placement} color={COLORS[shell]} paused={paused} selected={selected}
+      hovered={hovered} onHoverChange={setHovered} onSelect={onSelect} />
   </group>;
 }
 
 function FreeNode({ placement, paused, selected, onSelect }: PersonNodeProps) {
   const group = useRef<Group>(null);
-  useFrame(({ clock }) => {
+  const motionTime = useRef(0);
+  const [hovered, setHovered] = useState(false);
+  useFrame((_, delta) => {
     if (!group.current) return;
-    const position = freePosition(placement.seed, paused ? 0 : clock.getElapsedTime());
+    motionTime.current = advanceMotionTime(motionTime.current, delta, paused, hovered);
+    const position = freePosition(placement.seed, motionTime.current);
     group.current.position.set(...position);
   });
-  return <NodeVisual ref={group} placement={placement} color="#8a9bb7" paused={paused} selected={selected} onSelect={onSelect} free />;
+  return <NodeVisual ref={group} placement={placement} color="#8a9bb7" paused={paused} selected={selected}
+    hovered={hovered} onHoverChange={setHovered} onSelect={onSelect} free />;
 }
 
 interface NodeVisualProps {
@@ -53,18 +58,21 @@ interface NodeVisualProps {
   color: string;
   paused: boolean;
   selected: boolean;
+  hovered: boolean;
   free?: boolean;
   onSelect: (id: string) => void;
+  onHoverChange: (hovered: boolean) => void;
 }
 
-function NodeVisual({ ref, placement, color, paused, selected, free, onSelect }: NodeVisualProps) {
+function NodeVisual({ ref, placement, color, paused, selected, hovered, free, onSelect, onHoverChange }: NodeVisualProps) {
   const select = () => onSelect(placement.person.id);
   return <group ref={ref}>
-    <AtomicMarker color={color} free={free} paused={paused} selected={selected} seed={placement.seed} onSelect={select} />
+    <AtomicMarker color={color} free={free} paused={paused} selected={selected} hovered={hovered}
+      seed={placement.seed} onSelect={select} onHoverChange={onHoverChange} />
     <pointLight color={color} intensity={free ? .28 : .8} distance={3.4} />
-    <Html center distanceFactor={14} zIndexRange={[20, 0]}>
+    <Html center position={[0, free ? -.54 : -.68, 0]} distanceFactor={14} zIndexRange={[20, 0]}>
       <button className={`person-label${free ? " person-label--free" : ""}${selected ? " person-label--selected" : ""}`}
-        onClick={select} onPointerDown={select}>
+        onClick={select}>
         {placement.person.name}<span>{placement.person.score}</span>
       </button>
     </Html>
