@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { resolvePlanetTextureSource } from "../app/domain/planet-textures";
+import { getPlanetTextureSource, resolvePlanetTextureSource } from "../app/domain/planet-textures";
 
 describe("standart gezegen texture kaynakları", () => {
+  it("yapılandırılmış gezegenlerin public texture yollarını döndürür", () => {
+    expect(getPlanetTextureSource("earth")).toBe("/textures/earth.jpg");
+    expect(getPlanetTextureSource("venus")).toBe("/textures/venus.jpg");
+  });
+
   it("aynı-origin public yolunu kabul eder", () => {
     expect(resolvePlanetTextureSource({ kind: "path", value: "/textures/earth.jpg" })).toBe("/textures/earth.jpg");
   });

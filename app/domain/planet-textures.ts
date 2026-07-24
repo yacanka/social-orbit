@@ -13,7 +13,18 @@ export type PlanetTextureSource =
  * earth: { kind: "path", value: "/textures/earth.jpg" }
  * mars: { kind: "base64", mimeType: "image/jpeg", value: "BASE64_DEĞERİ" }
  */
-export const PLANET_TEXTURES: Partial<Record<StandardPlanetSkin, PlanetTextureSource>> = {};
+export const PLANET_TEXTURES: Partial<Record<StandardPlanetSkin, PlanetTextureSource>> = {
+  sun: { kind: "path", value: "/textures/sun.jpg" },
+  mercury: { kind: "path", value: "/textures/mercury.jpg" },
+  venus: { kind: "path", value: "/textures/venus.jpg" },
+  earth: { kind: "path", value: "/textures/earth.jpg" },
+  mars: { kind: "path", value: "/textures/mars.jpg" },
+  jupiter: { kind: "path", value: "/textures/jupiter.jpg" },
+  saturn: { kind: "path", value: "/textures/saturn.jpg" },
+  neptune: { kind: "path", value: "/textures/neptune.jpg" },
+  uranus: { kind: "path", value: "/textures/uranus.jpg" },
+  moon: { kind: "path", value: "/textures/moon.jpg" },
+};
 
 const DATA_URL = /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=\s]+$/i;
 const RAW_BASE64 = /^[a-z0-9+/=\s]+$/i;
